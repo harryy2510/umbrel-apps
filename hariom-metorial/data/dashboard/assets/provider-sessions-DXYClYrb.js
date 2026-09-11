@@ -1,0 +1,2 @@
+import{b as s,r as t,j as r}from"./index-D4F7dAoF.js";import{P as i}from"./table-CAM7xA8j.js";import"./id-CVnhzNgp.js";import"./builder-CexKtPIG.js";import"./index-CU3KhyOV.js";import"./dataTableUtils-m_7S2Vs7.js";let x=()=>{let e=s();return t({instance:e})(({instance:n})=>r.jsx(r.Fragment,{children:r.jsx(i,{})}))};export{x as ProviderSessionsPage};
+//# sourceMappingURL=provider-sessions-DXYClYrb.js.map

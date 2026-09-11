@@ -1,0 +1,2 @@
+import{b as n,u as o,a as l,m,k as u,j as p,e as c}from"./index-D4F7dAoF.js";import{h as d}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let I=()=>{var e;let t=n(),a=o(),s=l(),i=m(),{skillId:r}=u();return p.jsx(d,{instanceId:(e=t.data)==null?void 0:e.id,onDeleteSuccess:()=>i(c.instance.skills(a.data,s.data,t.data)),skillId:r})};export{I as SkillSettingsPage};
+//# sourceMappingURL=settings-DjKW16-Z.js.map

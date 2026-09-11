@@ -1,0 +1,2 @@
+import{b as e,u as n,k as o,j as l}from"./index-D4F7dAoF.js";import{c as m}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let I=()=>{var a,i;let r=e(),s=n(),{skillId:t}=o();return l.jsx(m,{instanceId:(a=r.data)==null?void 0:a.id,skillId:t,shareContext:t?{mode:"dashboard",organizationId:(i=s.data)==null?void 0:i.id,skills:[{id:t}]}:null})};export{I as SkillParticipantsPage};
+//# sourceMappingURL=participants-D_sMouMR.js.map

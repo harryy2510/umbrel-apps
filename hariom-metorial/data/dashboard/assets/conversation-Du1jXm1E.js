@@ -1,0 +1,2 @@
+import{u as i,b as o,r as u,j as s,bW as d,P as g}from"./index-D4F7dAoF.js";let l=()=>{let r=i(),a=o();return u({organization:r,instance:a})(()=>s.jsx(d,{setRestrictHeight:t=>{var e;return(e=window.metorial_setRestrictHeight)==null?void 0:e.call(window,t)},renderHeader:({title:t,assistantName:e,description:n})=>s.jsx(g,{title:t??e,description:n})}))};export{l as AssistantConversationPage};
+//# sourceMappingURL=conversation-Du1jXm1E.js.map

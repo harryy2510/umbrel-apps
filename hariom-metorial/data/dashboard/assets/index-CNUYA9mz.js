@@ -1,0 +1,2 @@
+import{n,V as d}from"./index-D4F7dAoF.js";import{u as i}from"./index-By3nMq1z.js";let x=(s=500,c={})=>{let a=c.updateSearchParams??!0,[h,l]=n.useState(""),[u,o]=d(),t=a?u.get("search")??"":h,m=i(t,s).trim()||void 0;return{search:t,setSearch:e=>{if(!a){l(e);return}o(S=>{let r=new URLSearchParams(S);return e.length>0?r.set("search",e):r.delete("search"),r},{replace:!0})},searchQuery:m}};export{x as u};
+//# sourceMappingURL=index-CNUYA9mz.js.map

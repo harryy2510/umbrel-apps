@@ -1,0 +1,2 @@
+import{j as e,ae as t}from"./index-D4F7dAoF.js";let o=({id:s,copy:a})=>e.jsxs("span",{style:{position:"relative",width:"fit-content",paddingRight:30,fontFamily:"jetbrains mono, monospace",display:"inline-flex"},children:[e.jsx("span",{style:{wordBreak:"break-all",overflowWrap:"break-word"},children:s}),a!==!1&&e.jsx("span",{style:{position:"absolute",right:0,top:"50%",transform:"translateY(-50%)"},children:e.jsx(t,{value:s})})]});export{o as I};
+//# sourceMappingURL=id-CVnhzNgp.js.map

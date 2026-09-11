@@ -1,6 +1,38 @@
 :3300 {
-	root * /usr/share/caddy
 	encode gzip
-	try_files {path} /index.html
-	file_server
+
+	# Umbrel only publishes the app port (3300). Proxy Metorial's
+	# internal listeners so LAN clients never need :4310–:4314.
+	handle /core-api* {
+		uri strip_prefix /core-api
+		reverse_proxy api:4310
+	}
+
+	handle /mcp-api* {
+		uri strip_prefix /mcp-api
+		reverse_proxy api:4311 {
+			flush_interval -1
+		}
+	}
+
+	handle /marketplace-api* {
+		uri strip_prefix /marketplace-api
+		reverse_proxy api:4312
+	}
+
+	handle /oauth-api* {
+		uri strip_prefix /oauth-api
+		reverse_proxy api:4313
+	}
+
+	handle /private-api* {
+		uri strip_prefix /private-api
+		reverse_proxy api:4314
+	}
+
+	handle {
+		root * /usr/share/caddy
+		try_files {path} /index.html
+		file_server
+	}
 }

@@ -1,0 +1,2 @@
+import{b as n,u as o,a as u,m as l,k as p,j as m,e as c}from"./index-D4F7dAoF.js";import{m as d}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let C=()=>{var e;let t=n(),a=o(),s=u(),r=l(),{skillGroupId:i}=p();return m.jsx(d,{instanceId:(e=t.data)==null?void 0:e.id,onDeleteSuccess:()=>r(c.instance.skillGroups(a.data,s.data,t.data)),skillGroupId:i})};export{C as SkillGroupSettingsPage};
+//# sourceMappingURL=settings-mJJCJpcP.js.map

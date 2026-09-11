@@ -1,0 +1,2 @@
+import{b as i,k as s,aH as o,r as m,j as d}from"./index-D4F7dAoF.js";import{I}from"./instancesTable-BtHvX96C.js";import"./id-CVnhzNgp.js";import"./builder-CexKtPIG.js";import"./index-CU3KhyOV.js";import"./dataTableUtils-m_7S2Vs7.js";let j=()=>{var a;let t=i(),{integrationId:e}=s(),n=o((a=t.data)==null?void 0:a.id,e);return m({integration:n})(({integration:r})=>d.jsx(I,{instanceId:t.data.id,integration:r.data}))};export{j as IntegrationInstancesPage};
+//# sourceMappingURL=instances-CEa08aTX.js.map

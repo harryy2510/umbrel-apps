@@ -1,0 +1,2 @@
+import{k as i,m as o,b as c,r as m,j as d}from"./index-D4F7dAoF.js";import{D as u}from"./index-BICjBghF.js";let p=()=>{let{id:t}=i(),a=o(),s=c();return m({instance:s})(({instance:n})=>d.jsx(u,{instanceId:n.data.id,documentId:t,onBack:()=>a(-1),setRestrictHeight:r=>{var e;return(e=window.metorial_setRestrictHeight)==null?void 0:e.call(window,r)}}))};export{p as DocumentPage};
+//# sourceMappingURL=doc-DW8Fm6kM.js.map

@@ -1,0 +1,2 @@
+import{b as a,k as i,j as s}from"./index-D4F7dAoF.js";import{n as o}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let u=()=>{var t;let e=a(),{skillMarketplaceId:r}=i();return s.jsx(o,{instanceId:(t=e.data)==null?void 0:t.id,skillMarketplaceId:r})};export{u as SkillMarketplaceEditorPage};
+//# sourceMappingURL=editor-DxUN7JPw.js.map

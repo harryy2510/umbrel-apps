@@ -1,0 +1,2 @@
+import{b as t,k as a,r as s,j as o}from"./index-D4F7dAoF.js";import{M as i}from"./tokensTable-zvDn__nu.js";import"./id-CVnhzNgp.js";import"./builder-CexKtPIG.js";import"./index-CU3KhyOV.js";import"./dataTableUtils-m_7S2Vs7.js";let g=()=>{let r=t(),{magicMcpServerId:e}=a();return s({instance:r})(({})=>o.jsx(i,{magicMcpServerId:e}))};export{g as MagicMcpServerTokensPage};
+//# sourceMappingURL=tokens-CsBz4z1Y.js.map

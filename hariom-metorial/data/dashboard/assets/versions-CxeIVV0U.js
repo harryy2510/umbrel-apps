@@ -1,0 +1,2 @@
+import{b as s,k as i,j as o}from"./index-D4F7dAoF.js";import{e as a}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let k=()=>{var t;let e=s(),{skillId:r}=i();return o.jsx(a,{instanceId:(t=e.data)==null?void 0:t.id,skillId:r})};export{k as SkillVersionsPage};
+//# sourceMappingURL=versions-CxeIVV0U.js.map

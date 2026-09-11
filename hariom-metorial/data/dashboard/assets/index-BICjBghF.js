@@ -1,0 +1,3 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/documentEditor-CYhZV2eB.js","assets/index-D4F7dAoF.js","assets/index-CE8icVW2.css","assets/tiptap-markdown.es-uKsrF0DE.js","assets/index-Vcq4gwWv.js","assets/index-D4uIhWzL.js","assets/_import-DbQ6GQdx.js","assets/repositoryPicker-D2v1sKVt.js","assets/index-CG8TlifH.js","assets/index-f7DavXDa.js","assets/index-DgVtlMkK.js","assets/index-Bpz9ldR3.css"])))=>i.map(i=>d[i]);
+import{ax as o,ay as t}from"./index-D4F7dAoF.js";let r=o(()=>t(()=>import("./documentEditor-CYhZV2eB.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8,9,10,11])).then(e=>e.DocumentEditorScene));export{r as D};
+//# sourceMappingURL=index-BICjBghF.js.map

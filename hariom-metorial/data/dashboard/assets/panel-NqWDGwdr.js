@@ -1,0 +1,2 @@
+import{D as a,j as o,J as r}from"./index-D4F7dAoF.js";import{P as i,a as d}from"./details-CG70C_gK.js";let t=n=>o.jsxs(o.Fragment,{children:[o.jsx(r.Header,{children:o.jsx(r.Title,{children:"Provider Invocation"})}),o.jsx(r.Content,{children:"providerInvocationId"in n?o.jsx(i,{providerInvocationId:n.providerInvocationId}):o.jsx(d,{callbackEventId:n.callbackEventId})})]}),c=n=>a(({dialogProps:e})=>o.jsx(r.Wrapper,{...e,width:900,children:o.jsx(t,{...n})}));export{c as s};
+//# sourceMappingURL=panel-NqWDGwdr.js.map

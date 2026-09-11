@@ -2,7 +2,7 @@ manifestVersion: 1.1
 id: hariom-metorial
 category: developer
 name: Metorial
-version: "0.1.1-dev"
+version: "0.3.0-dev"
 tagline: Self-hosted MCP, OAuth, and agent tool marketplace
 icon: https://raw.githubusercontent.com/harryy2510/umbrel-apps/main/hariom-metorial/icon.png
 description: >-

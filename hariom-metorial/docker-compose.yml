@@ -5,7 +5,8 @@ services:
     environment:
       APP_HOST: hariom-metorial_dashboard_1
       APP_PORT: 3300
-      PROXY_AUTH_WHITELIST: "/ping"
+      # Metorial has its own login. Umbrel cookie auth would block MCP agents.
+      PROXY_AUTH_ADD: "false"
 
   dashboard:
     image: caddy:2.9-alpine
@@ -108,11 +109,6 @@ services:
     image: ghcr.io/metorial/metorial-api:dev
     restart: on-failure
     stop_grace_period: 1m
-    ports:
-      - "4310:4310"
-      - "4311:4311"
-      - "4312:4312"
-      - "4313:4313"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
       REDIS_URL: redis://:@redis-db:6379/0
@@ -123,10 +119,10 @@ services:
       PROVIDER_OAUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
       AUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
       ENCRYPTION_SECRET: ${APP_METORIAL_SECRET}
-      API_URL: ${DEVICE_DOMAIN_NAME}:4310
-      APP_URL: ${DEVICE_DOMAIN_NAME}:${APP_METORIAL_DASHBOARD_PORT:-3300}
-      MCP_URL: ${DEVICE_DOMAIN_NAME}:4311
-      PROVIDER_OAUTH_URL: ${DEVICE_DOMAIN_NAME}:4313
+      API_URL: ${DEVICE_DOMAIN_NAME}:3300/core-api
+      APP_URL: ${DEVICE_DOMAIN_NAME}:3300
+      MCP_URL: ${DEVICE_DOMAIN_NAME}:3300/mcp-api
+      PROVIDER_OAUTH_URL: ${DEVICE_DOMAIN_NAME}:3300/oauth-api
       PORTAL_HOST_TEMPLATE: http://${DEVICE_DOMAIN_NAME}:4315
       PORTALS_URL: http://${DEVICE_DOMAIN_NAME}:4315
       PORTAL_API_PORT: "4315"
@@ -145,4 +141,3 @@ services:
       - meilisearch
       - etcd
       - opensearch
-      - engine

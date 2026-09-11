@@ -1,0 +1,2 @@
+import{b as r,r as e,j as i}from"./index-D4F7dAoF.js";import{P as n}from"./table-K0IMwhyf.js";import"./panel-NqWDGwdr.js";import"./details-CG70C_gK.js";import"./styled-CvlR525H.js";import"./_import-DbQ6GQdx.js";let c=()=>{let t=r();return e({instance:t})(({instance:o})=>i.jsx(n,{linkToDetail:!0,limit:25}))};export{c as ProviderAuthEventsPage};
+//# sourceMappingURL=provider-auth-events-C1k6Kk25.js.map

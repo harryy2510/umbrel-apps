@@ -1,0 +1,2 @@
+import{k as n,b as o,u as l,a as u,j as m,e as p}from"./index-D4F7dAoF.js";import{f as c}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let q=()=>{var r;let{skillId:e}=n(),t=o(),a=l(),s=u();return m.jsx(c,{instanceId:(r=t.data)==null?void 0:r.id,skillId:e,href:i=>`${p.instance.skill(a.data,s.data,t.data,e)}/merge-requests/${i}/conversation`})};export{q as SkillMergeRequestsPage};
+//# sourceMappingURL=merge-requests-CpCZaglC.js.map

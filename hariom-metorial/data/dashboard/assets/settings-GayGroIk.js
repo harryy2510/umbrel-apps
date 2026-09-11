@@ -1,0 +1,2 @@
+import{b as n,u as l,a as o,m,k as p,j as u,e as c}from"./index-D4F7dAoF.js";import{k as d}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let C=()=>{var e;let t=n(),a=l(),s=o(),i=m(),{skillTemplateId:r}=p();return u.jsx(d,{instanceId:(e=t.data)==null?void 0:e.id,onDeleteSuccess:()=>i(c.instance.skillTemplates(a.data,s.data,t.data)),skillTemplateId:r})};export{C as SkillTemplateSettingsPage};
+//# sourceMappingURL=settings-GayGroIk.js.map

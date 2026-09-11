@@ -1,0 +1,2 @@
+import{b as o,u as l,a as m,k as u,e as p,j as c}from"./index-D4F7dAoF.js";import{b as d}from"./index-D4uIhWzL.js";import"./_import-DbQ6GQdx.js";import"./repositoryPicker-D2v1sKVt.js";import"./index-CG8TlifH.js";import"./index-f7DavXDa.js";import"./index-DgVtlMkK.js";let I=()=>{var e;let t=o(),s=l(),r=m(),{skillId:a}=u(),n=p.instance.skill(s.data,r.data,t.data,a);return c.jsx(d,{instanceId:(e=t.data)==null?void 0:e.id,skillId:a,getDocumentPath:i=>`${n}/agent/${i}`})};export{I as SkillAgentsPage};
+//# sourceMappingURL=agents-CztDJozU.js.map
