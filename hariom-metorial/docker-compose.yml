@@ -158,18 +158,23 @@ services:
     image: ghcr.io/metorial/metorial-api:dev
     restart: on-failure
     stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/data/api-logs:/var/log/metorial
     command:
       - sh
       - -c
       - |
-        echo "waiting for postgres"
+        mkdir -p /var/log/metorial
+        exec >> /var/log/metorial/api.log 2>&1
+        echo "=== api start $$(date -Iseconds) ==="
         n=0
-        until bun -e "const s=await Bun.connect({hostname:'hariom-metorial_postgres-db_1',port:5432});s.end();"; do
+        until bun -e "const hosts=['hariom-metorial_postgres-db_1','postgres-db']; let ok=false; for (const h of hosts) { try { const s=await Bun.connect({hostname:h,port:5432}); s.end(); console.log('pg ok',h); ok=true; break; } catch(e) { console.log('pg fail',h,String(e)); } } if (!ok) process.exit(1);"; do
           n=$$((n+1))
+          echo "postgres wait $$n"
           if [ $$n -gt 40 ]; then echo "postgres timeout"; exit 1; fi
           sleep 2
         done
-        echo "postgres up; migrate + start"
+        echo "migrate + start"
         bun run migrate && bun run start
     environment:
       API_PORT: "4310"

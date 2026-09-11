@@ -5,7 +5,8 @@ APP_DATA_DIR="${APP_DATA_DIR:-$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")
 DEST="${APP_DATA_DIR}/data"
 
 mkdir -p "${DEST}/postgres" "${DEST}/redis" "${DEST}/mongo" \
-  "${DEST}/meili" "${DEST}/minio" "${DEST}/etcd" "${DEST}/opensearch"
+  "${DEST}/meili" "${DEST}/minio" "${DEST}/etcd" "${DEST}/opensearch" \
+  "${DEST}/api-logs"
 
 if [[ -f "${APP_DATA_DIR}/Caddyfile.template" ]]; then
   cp "${APP_DATA_DIR}/Caddyfile.template" "${APP_DATA_DIR}/Caddyfile"
