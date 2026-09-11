@@ -7,7 +7,6 @@ DEST="${APP_DATA_DIR}/data"
 mkdir -p "${DEST}/postgres" "${DEST}/redis" "${DEST}/mongo" \
   "${DEST}/meili" "${DEST}/minio" "${DEST}/etcd" "${DEST}/opensearch"
 
-# Caddyfile.template is copied on Umbrel updates; render if missing.
-if [[ -f "${APP_DATA_DIR}/Caddyfile.template" && ! -f "${APP_DATA_DIR}/Caddyfile" ]]; then
+if [[ -f "${APP_DATA_DIR}/Caddyfile.template" ]]; then
   cp "${APP_DATA_DIR}/Caddyfile.template" "${APP_DATA_DIR}/Caddyfile"
 fi

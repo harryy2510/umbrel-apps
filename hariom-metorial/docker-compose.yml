@@ -5,19 +5,19 @@ services:
     environment:
       APP_HOST: hariom-metorial_dashboard_1
       APP_PORT: 3300
-      # Metorial has its own login. Umbrel cookie auth would block MCP agents.
       PROXY_AUTH_ADD: "false"
 
   dashboard:
+    container_name: hariom-metorial_dashboard_1
     image: caddy:2.9-alpine
     restart: on-failure
     stop_grace_period: 1m
     volumes:
-      # Umbrel compose project dir is not the app folder — never use ./
       - ${APP_DATA_DIR}/data/dashboard:/usr/share/caddy:ro
       - ${APP_DATA_DIR}/Caddyfile:/etc/caddy/Caddyfile:ro
 
   etcd:
+    container_name: hariom-metorial_etcd_1
     image: bitnamilegacy/etcd:3.5.16
     restart: on-failure
     environment:
@@ -26,9 +26,8 @@ services:
       - ${APP_DATA_DIR}/data/etcd:/bitnami/etcd
 
   mongodb:
-    # No official Alpine image. Mongo 7/8 is Ubuntu (jammy/noble) only.
+    container_name: hariom-metorial_mongodb_1
     image: mongo:7.0-jammy
-    user: "1000:1000"
     restart: on-failure
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
@@ -37,6 +36,7 @@ services:
       - ${APP_DATA_DIR}/data/mongo:/data/db
 
   redis-db:
+    container_name: hariom-metorial_redis-db_1
     image: redis:7.4-alpine
     user: "1000:1000"
     restart: on-failure
@@ -45,6 +45,7 @@ services:
       - ${APP_DATA_DIR}/data/redis:/data
 
   meilisearch:
+    container_name: hariom-metorial_meilisearch_1
     image: getmeili/meilisearch:v1.14
     user: "1000:1000"
     restart: on-failure
@@ -55,6 +56,7 @@ services:
       - ${APP_DATA_DIR}/data/meili:/meili_data
 
   postgres-db:
+    container_name: hariom-metorial_postgres-db_1
     image: postgres:16-alpine
     user: "1000:1000"
     restart: on-failure
@@ -67,8 +69,7 @@ services:
       - ${APP_DATA_DIR}/data/postgres:/var/lib/postgresql/data
 
   minio:
-    # pgsty/silo: MinIO fork. Same S3 API, MINIO_* vars, on-disk format.
-    # Keep service name `minio` so Metorial still reaches minio:9000.
+    container_name: hariom-metorial_minio_1
     image: pgsty/silo:RELEASE.2026-09-03T13-18-01Z
     user: "1000:1000"
     restart: on-failure
@@ -80,6 +81,7 @@ services:
       - ${APP_DATA_DIR}/data/minio:/data
 
   opensearch:
+    container_name: hariom-metorial_opensearch_1
     image: opensearchproject/opensearch:2.18.0
     restart: on-failure
     environment:
@@ -87,12 +89,11 @@ services:
       bootstrap.memory_lock: "false"
       DISABLE_SECURITY_PLUGIN: "true"
       OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
-      OPENSEARCH_USERNAME: admin
-      OPENSEARCH_PASSWORD: admin
     volumes:
       - ${APP_DATA_DIR}/data/opensearch:/usr/share/opensearch/data
 
   engine:
+    container_name: hariom-metorial_engine_1
     image: ghcr.io/metorial/metorial-mcp-engine-unified:dev
     restart: on-failure
     stop_grace_period: 1m
@@ -100,20 +101,22 @@ services:
       - postgres-db
       - redis-db
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
-      REDIS_URL: redis://:@redis-db:6379/0
+      DATABASE_URL: postgresql://postgres:postgres@hariom-metorial_postgres-db_1:5432/postgres
+      REDIS_URL: redis://:@hariom-metorial_redis-db_1:6379/0
 
   api:
+    container_name: hariom-metorial_api_1
     image: ghcr.io/metorial/metorial-api:dev
     restart: on-failure
     stop_grace_period: 1m
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
-      REDIS_URL: redis://:@redis-db:6379/0
-      USAGE_MONGO_URL: mongodb://mongo:mongo@mongodb:27017
-      OPENSEARCH_HOST: http://opensearch:9200
-      OPENSEARCH_USERNAME: admin
-      OPENSEARCH_PASSWORD: admin
+      API_PORT: "4310"
+      MCP_PORT: "4311"
+      PRIVATE_API_PORT: "4314"
+      DATABASE_URL: postgresql://postgres:postgres@hariom-metorial_postgres-db_1:5432/postgres
+      REDIS_URL: redis://:@hariom-metorial_redis-db_1:6379/0
+      USAGE_MONGO_URL: mongodb://mongo:mongo@hariom-metorial_mongodb_1:27017/?authSource=admin
+      OPENSEARCH_HOST: http://hariom-metorial_opensearch_1:9200
       PROVIDER_OAUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
       AUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
       ENCRYPTION_SECRET: ${APP_METORIAL_SECRET}
@@ -121,17 +124,16 @@ services:
       APP_URL: ${DEVICE_DOMAIN_NAME}:3300
       MCP_URL: ${DEVICE_DOMAIN_NAME}:3300/mcp-api
       PROVIDER_OAUTH_URL: ${DEVICE_DOMAIN_NAME}:3300/oauth-api
-      PORTAL_HOST_TEMPLATE: http://${DEVICE_DOMAIN_NAME}:4315
-      PORTALS_URL: http://${DEVICE_DOMAIN_NAME}:4315
-      PORTAL_API_PORT: "4315"
-      INTEGRATIONS_API_URL: http://${DEVICE_DOMAIN_NAME}:4316
+      PORTAL_HOST_TEMPLATE: http://${DEVICE_DOMAIN_NAME}:3300
+      PORTALS_URL: http://${DEVICE_DOMAIN_NAME}:3300
+      INTEGRATIONS_API_URL: http://${DEVICE_DOMAIN_NAME}:3300
       DENO_DEPLOY_TOKEN: placeholder
       DENO_ORGANIZATION_ID: placeholder
       SCM_GITHUB_CLIENT_ID: placeholder
       SCM_GITHUB_CLIENT_SECRET: placeholder
       METORIAL_ENV: production
       NODE_ENV: production
-      ENGINE_MANAGER_ADDRESSES: engine:50050
+      ENGINE_MANAGER_ADDRESSES: hariom-metorial_engine_1:50050
     depends_on:
       - postgres-db
       - redis-db
