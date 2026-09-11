@@ -4,8 +4,7 @@
 	handle /core-api* {
 		uri strip_prefix /core-api
 		reverse_proxy hariom-metorial_api_1:4310 {
-			lb_try_duration 10s
-			header_up Host {host}
+			lb_try_duration 60s
 		}
 	}
 
@@ -13,28 +12,21 @@
 		uri strip_prefix /mcp-api
 		reverse_proxy hariom-metorial_api_1:4311 {
 			flush_interval -1
-			lb_try_duration 10s
-		}
-	}
-
-	handle /marketplace-api* {
-		uri strip_prefix /marketplace-api
-		reverse_proxy hariom-metorial_api_1:4312 {
-			lb_try_duration 10s
+			lb_try_duration 60s
 		}
 	}
 
 	handle /oauth-api* {
 		uri strip_prefix /oauth-api
 		reverse_proxy hariom-metorial_api_1:4313 {
-			lb_try_duration 10s
+			lb_try_duration 60s
 		}
 	}
 
 	handle /private-api* {
 		uri strip_prefix /private-api
 		reverse_proxy hariom-metorial_api_1:4314 {
-			lb_try_duration 10s
+			lb_try_duration 60s
 		}
 	}
 

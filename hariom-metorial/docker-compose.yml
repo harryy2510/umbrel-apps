@@ -16,10 +16,34 @@ services:
       - ${APP_DATA_DIR}/data/dashboard:/usr/share/caddy:ro
       - ${APP_DATA_DIR}/Caddyfile:/etc/caddy/Caddyfile:ro
 
+  init-data:
+    container_name: hariom-metorial_init-data_1
+    image: busybox:1.37
+    user: "0:0"
+    command:
+      - sh
+      - -c
+      - |
+        mkdir -p /data/postgres /data/redis /data/mongo /data/meili /data/minio /data/etcd /data/opensearch
+        chown -R 1000:1000 /data/postgres /data/redis /data/minio /data/meili /data/etcd /data/opensearch
+        chown -R 999:0 /data/mongo || true
+        touch /data/.chowned
+        exec sleep infinity
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    healthcheck:
+      test: ["CMD", "test", "-f", "/data/.chowned"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
   etcd:
     container_name: hariom-metorial_etcd_1
     image: bitnamilegacy/etcd:3.5.16
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     environment:
       ALLOW_NONE_AUTHENTICATION: "yes"
     volumes:
@@ -29,6 +53,9 @@ services:
     container_name: hariom-metorial_mongodb_1
     image: mongo:7.0-jammy
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
@@ -40,6 +67,9 @@ services:
     image: redis:7.4-alpine
     user: "1000:1000"
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     command: redis-server --appendonly yes
     volumes:
       - ${APP_DATA_DIR}/data/redis:/data
@@ -49,6 +79,9 @@ services:
     image: getmeili/meilisearch:v1.14
     user: "1000:1000"
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     environment:
       MEILI_ENV: production
       MEILI_NO_ANALYTICS: "true"
@@ -60,6 +93,9 @@ services:
     image: postgres:16-alpine
     user: "1000:1000"
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     command: postgres -c max_connections=200
     environment:
       POSTGRES_USER: postgres
@@ -67,12 +103,20 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - ${APP_DATA_DIR}/data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
 
   minio:
     container_name: hariom-metorial_minio_1
     image: pgsty/silo:RELEASE.2026-09-03T13-18-01Z
     user: "1000:1000"
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
@@ -84,6 +128,9 @@ services:
     container_name: hariom-metorial_opensearch_1
     image: opensearchproject/opensearch:2.18.0
     restart: on-failure
+    depends_on:
+      init-data:
+        condition: service_healthy
     environment:
       discovery.type: single-node
       bootstrap.memory_lock: "false"
@@ -98,8 +145,10 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     depends_on:
-      - postgres-db
-      - redis-db
+      postgres-db:
+        condition: service_healthy
+      redis-db:
+        condition: service_started
     environment:
       DATABASE_URL: postgresql://postgres:postgres@hariom-metorial_postgres-db_1:5432/postgres
       REDIS_URL: redis://:@hariom-metorial_redis-db_1:6379/0
@@ -109,6 +158,19 @@ services:
     image: ghcr.io/metorial/metorial-api:dev
     restart: on-failure
     stop_grace_period: 1m
+    command:
+      - sh
+      - -c
+      - |
+        echo "waiting for postgres"
+        n=0
+        until bun -e "const s=await Bun.connect({hostname:'hariom-metorial_postgres-db_1',port:5432});s.end();"; do
+          n=$$((n+1))
+          if [ $$n -gt 40 ]; then echo "postgres timeout"; exit 1; fi
+          sleep 2
+        done
+        echo "postgres up; migrate + start"
+        bun run migrate && bun run start
     environment:
       API_PORT: "4310"
       MCP_PORT: "4311"
@@ -135,9 +197,11 @@ services:
       NODE_ENV: production
       ENGINE_MANAGER_ADDRESSES: hariom-metorial_engine_1:50050
     depends_on:
-      - postgres-db
-      - redis-db
-      - mongodb
-      - meilisearch
-      - etcd
-      - opensearch
+      postgres-db:
+        condition: service_healthy
+      redis-db:
+        condition: service_started
+      mongodb:
+        condition: service_started
+      opensearch:
+        condition: service_started
