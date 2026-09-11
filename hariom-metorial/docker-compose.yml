@@ -13,8 +13,9 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     volumes:
-      - ${APP_DATA_DIR}/data/dashboard:/usr/share/caddy:ro
-      - ${APP_DATA_DIR}/data/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Serve the packaged SPA, not persistent app-data (that kept the placeholder).
+      - ./data/dashboard:/usr/share/caddy:ro
+      - ./data/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:
       - api
 

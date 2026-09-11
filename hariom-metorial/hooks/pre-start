@@ -8,10 +8,5 @@ DEST="${APP_DATA_DIR}/data"
 mkdir -p "${DEST}/dashboard" "${DEST}/postgres" "${DEST}/redis" "${DEST}/mongo" \
   "${DEST}/meili" "${DEST}/minio" "${DEST}/etcd" "${DEST}/opensearch"
 
-cp "${APP_ROOT}/data/Caddyfile" "${DEST}/Caddyfile"
-
-# Refresh packaged SPA unless the operator pinned a custom build.
-if [ ! -f "${DEST}/dashboard/.keep-custom" ]; then
-  rm -rf "${DEST}/dashboard"
-  cp -a "${APP_ROOT}/data/dashboard" "${DEST}/dashboard"
-fi
+# Dashboard + Caddyfile are bind-mounted from the app package (./data/...),
+# not APP_DATA_DIR. Do not copy them here or updates never appear.
