@@ -1,8 +1,6 @@
 :3300 {
 	encode gzip
 
-	# Umbrel only publishes the app port (3300). Proxy Metorial's
-	# internal listeners so LAN clients never need :4310–:4314.
 	handle /core-api* {
 		uri strip_prefix /core-api
 		reverse_proxy api:4310

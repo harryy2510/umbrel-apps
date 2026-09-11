@@ -13,15 +13,12 @@ services:
     restart: on-failure
     stop_grace_period: 1m
     volumes:
-      # Serve the packaged SPA, not persistent app-data (that kept the placeholder).
-      - ./data/dashboard:/usr/share/caddy:ro
-      - ./data/Caddyfile:/etc/caddy/Caddyfile:ro
-    depends_on:
-      - api
+      # Umbrel compose project dir is not the app folder — never use ./
+      - ${APP_DATA_DIR}/data/dashboard:/usr/share/caddy:ro
+      - ${APP_DATA_DIR}/Caddyfile:/etc/caddy/Caddyfile:ro
 
   etcd:
     image: bitnamilegacy/etcd:3.5.16
-    user: "1000:1000"
     restart: on-failure
     environment:
       ALLOW_NONE_AUTHENTICATION: "yes"
