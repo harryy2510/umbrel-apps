@@ -1,0 +1,35 @@
+manifestVersion: 1.1
+id: hariom-metorial
+category: developer
+name: Metorial
+version: "0.1.0-dev"
+tagline: Self-hosted MCP, OAuth, and agent tool marketplace
+description: >-
+  Metorial is an open-source identity and access layer for AI agents. This
+  Umbrel package runs the self-hosted platform: Postgres, Redis, Mongo,
+  OpenSearch, MinIO, etcd, Meilisearch, the Metorial API, and the MCP engine.
+
+
+  Use it as the LAN MCP endpoint for Claude, Codex, Grok, and Factory Droid.
+  Connect OAuth apps and register custom HTTP MCP servers (Context7,
+  Cloudflare, OpenConnector, a CloudWatch HTTP wrapper) in the in-app
+  marketplace.
+
+
+  Needs 8 GB RAM minimum (16 GB recommended). Official images are tagged
+  :dev. The dashboard is served from app data if you copy a built SPA into
+  data/dashboard; upstream does not publish a dashboard image yet.
+releaseNotes: >-
+  Initial community package. Wraps ghcr.io/metorial/metorial-api:dev and
+  metorial-mcp-engine-unified:dev. Exposes MCP on host port 4311 without
+  Umbrel cookie auth so coding agents can connect.
+developer: hariom
+website: https://metorial.com
+repo: https://github.com/metorial/metorial-platform
+support: https://github.com/metorial/metorial-platform/issues
+port: 3300
+gallery: []
+path: ""
+deterministicPassword: false
+submitter: hariom
+submitterUrl: ""

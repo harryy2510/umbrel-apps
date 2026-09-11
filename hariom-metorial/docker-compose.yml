@@ -1,0 +1,148 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: hariom-metorial_dashboard_1
+      APP_PORT: 3300
+      PROXY_AUTH_WHITELIST: "/ping"
+
+  dashboard:
+    image: caddy:2.9-alpine
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/data/dashboard:/usr/share/caddy:ro
+      - ${APP_DATA_DIR}/data/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+
+  etcd:
+    image: bitnamilegacy/etcd:3.5.16
+    user: "1000:1000"
+    restart: on-failure
+    environment:
+      ALLOW_NONE_AUTHENTICATION: "yes"
+    volumes:
+      - ${APP_DATA_DIR}/data/etcd:/bitnami/etcd
+
+  mongodb:
+    # No official Alpine image. Mongo 7/8 is Ubuntu (jammy/noble) only.
+    image: mongo:7.0-jammy
+    user: "1000:1000"
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    volumes:
+      - ${APP_DATA_DIR}/data/mongo:/data/db
+
+  redis-db:
+    image: redis:7.4-alpine
+    user: "1000:1000"
+    restart: on-failure
+    command: redis-server --appendonly yes
+    volumes:
+      - ${APP_DATA_DIR}/data/redis:/data
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.14
+    user: "1000:1000"
+    restart: on-failure
+    environment:
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - ${APP_DATA_DIR}/data/meili:/meili_data
+
+  postgres-db:
+    image: postgres:16-alpine
+    user: "1000:1000"
+    restart: on-failure
+    command: postgres -c max_connections=200
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ${APP_DATA_DIR}/data/postgres:/var/lib/postgresql/data
+
+  minio:
+    # pgsty/silo: MinIO fork. Same S3 API, MINIO_* vars, on-disk format.
+    # Keep service name `minio` so Metorial still reaches minio:9000.
+    image: pgsty/silo:RELEASE.2026-09-03T13-18-01Z
+    user: "1000:1000"
+    restart: on-failure
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: server /data --console-address ":9001"
+    volumes:
+      - ${APP_DATA_DIR}/data/minio:/data
+
+  opensearch:
+    image: opensearchproject/opensearch:2.18.0
+    restart: on-failure
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: "false"
+      DISABLE_SECURITY_PLUGIN: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+      OPENSEARCH_USERNAME: admin
+      OPENSEARCH_PASSWORD: admin
+    volumes:
+      - ${APP_DATA_DIR}/data/opensearch:/usr/share/opensearch/data
+
+  engine:
+    image: ghcr.io/metorial/metorial-mcp-engine-unified:dev
+    restart: on-failure
+    stop_grace_period: 1m
+    depends_on:
+      - postgres-db
+      - redis-db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
+      REDIS_URL: redis://:@redis-db:6379/0
+
+  api:
+    image: ghcr.io/metorial/metorial-api:dev
+    restart: on-failure
+    stop_grace_period: 1m
+    ports:
+      - "4310:4310"
+      - "4311:4311"
+      - "4312:4312"
+      - "4313:4313"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
+      REDIS_URL: redis://:@redis-db:6379/0
+      USAGE_MONGO_URL: mongodb://mongo:mongo@mongodb:27017
+      OPENSEARCH_HOST: http://opensearch:9200
+      OPENSEARCH_USERNAME: admin
+      OPENSEARCH_PASSWORD: admin
+      PROVIDER_OAUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
+      AUTH_TICKET_SECRET: ${APP_METORIAL_SECRET}
+      ENCRYPTION_SECRET: ${APP_METORIAL_SECRET}
+      API_URL: ${DEVICE_DOMAIN_NAME}:4310
+      APP_URL: ${DEVICE_DOMAIN_NAME}:${APP_METORIAL_DASHBOARD_PORT:-3300}
+      MCP_URL: ${DEVICE_DOMAIN_NAME}:4311
+      PROVIDER_OAUTH_URL: ${DEVICE_DOMAIN_NAME}:4313
+      PORTAL_HOST_TEMPLATE: http://${DEVICE_DOMAIN_NAME}:4315
+      PORTALS_URL: http://${DEVICE_DOMAIN_NAME}:4315
+      PORTAL_API_PORT: "4315"
+      INTEGRATIONS_API_URL: http://${DEVICE_DOMAIN_NAME}:4316
+      DENO_DEPLOY_TOKEN: placeholder
+      DENO_ORGANIZATION_ID: placeholder
+      SCM_GITHUB_CLIENT_ID: placeholder
+      SCM_GITHUB_CLIENT_SECRET: placeholder
+      METORIAL_ENV: production
+      NODE_ENV: production
+      ENGINE_MANAGER_ADDRESSES: engine:50050
+    depends_on:
+      - postgres-db
+      - redis-db
+      - mongodb
+      - meilisearch
+      - etcd
+      - opensearch
+      - engine

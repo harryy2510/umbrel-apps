@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Seed dashboard + Caddyfile on first start. Umbrel APP_DATA_DIR is empty.
+APP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEST="${APP_DATA_DIR}/data"
+
+mkdir -p "${DEST}/dashboard" "${DEST}/postgres" "${DEST}/redis" "${DEST}/mongo" \
+  "${DEST}/meili" "${DEST}/minio" "${DEST}/etcd" "${DEST}/opensearch"
+
+if [ ! -f "${DEST}/Caddyfile" ]; then
+  cp "${APP_ROOT}/data/Caddyfile" "${DEST}/Caddyfile"
+fi
+
+if [ ! -f "${DEST}/dashboard/index.html" ]; then
+  cp "${APP_ROOT}/data/dashboard/index.html" "${DEST}/dashboard/index.html"
+fi

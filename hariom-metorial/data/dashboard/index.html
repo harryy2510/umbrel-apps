@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Metorial on Umbrel</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 3rem auto;
+        padding: 0 1.25rem;
+        line-height: 1.5;
+        color: #111;
+      }
+      code {
+        font-size: 0.9em;
+        background: #f4f4f5;
+        padding: 0.1em 0.35em;
+      }
+      li {
+        margin: 0.35rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Metorial</h1>
+    <p>
+      Backend is packaged. Upstream does not publish a dashboard image; this page is a
+      placeholder until you copy a built SPA into
+      <code>app-data/hariom-metorial/data/dashboard</code>.
+    </p>
+    <p>LAN endpoints (replace host if yours is not <code>umbrel.local</code>):</p>
+    <ul>
+      <li>Core API — <code>http://umbrel.local:4310</code></li>
+      <li>MCP (agents) — <code>http://umbrel.local:4311</code></li>
+      <li>Marketplace — <code>http://umbrel.local:4312</code></li>
+      <li>OAuth — <code>http://umbrel.local:4313</code></li>
+    </ul>
+    <p>
+      Custom marketplace: in the real dashboard, add <strong>Remote custom servers</strong>
+      (Context7, Cloudflare, OpenConnector). Do not paste <code>umbrel.local</code> from
+      inside Metorial’s compose network — use the sibling container or app IP.
+    </p>
+  </body>
+</html>
