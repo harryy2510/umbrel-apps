@@ -35,7 +35,6 @@ services:
     build:
       context: .
       dockerfile: metamcp.Dockerfile
-      pull: false
     container_name: metamcp
     network_mode: host
     depends_on:
@@ -74,13 +73,14 @@ services:
       HOST: 0.0.0.0
       PORT: "33000"
       OOMOL_CONNECT_DATA_DIR: /app/data
-      OOMOL_CONNECT_ORIGIN: ${OOMOL_CONNECT_ORIGIN:-http://umbrel.local:33000}
+      OOMOL_CONNECT_ORIGIN: ${OOMOL_CONNECT_ORIGIN:-https://connect.hariom.cc}
       OOMOL_CONNECT_ENCRYPTION_KEY: ${OOMOL_CONNECT_ENCRYPTION_KEY}
       OOMOL_CONNECT_ADMIN_TOKEN: ${OOMOL_CONNECT_ADMIN_TOKEN}
     volumes:
       - ${APP_DATA_DIR:-.}/data/oomol:/app/data
 
   cw-dev:
+    pull_policy: never
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile
@@ -108,6 +108,7 @@ services:
       - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
 
   cw-prod:
+    pull_policy: never
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile

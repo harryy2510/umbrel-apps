@@ -11,3 +11,6 @@ if [ -f "${STACK_ENV}" ]; then
   . "${STACK_ENV}"
   set +a
 fi
+
+# Map the loaded amd64 tar to a non-registry name so compose build does not Head GHCR.
+docker tag ghcr.io/umbrella-it-group/metamcp:latest hariom-metamcp:local >/dev/null 2>&1 || true
