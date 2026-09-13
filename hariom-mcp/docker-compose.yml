@@ -31,9 +31,11 @@ services:
   app:
     # No `image:` on purpose. Umbrel docker.pull() Heads GHCR and 401s on this
     # private package even when the amd64 tar is already loaded on the host.
+    pull_policy: never
     build:
       context: .
       dockerfile: metamcp.Dockerfile
+      pull: false
     container_name: metamcp
     network_mode: host
     depends_on:
