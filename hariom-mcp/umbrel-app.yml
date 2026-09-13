@@ -2,7 +2,7 @@ manifestVersion: 1.1
 id: hariom-mcp
 category: developer
 name: MCP Gateway
-version: "1.0.6"
+version: "1.0.7"
 tagline: MetaMCP fan-in, OpenConnector OAuth, CloudWatch via mcp-proxy
 icon: https://raw.githubusercontent.com/harryy2510/umbrel-apps/main/hariom-mcp/icon.png
 description: >-

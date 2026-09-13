@@ -77,8 +77,7 @@ services:
       dockerfile_inline: |
         FROM ghcr.io/sparfenyuk/mcp-proxy:latest
         COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
-        ENV PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        ENTRYPOINT ["catatonit", "--", "mcp-proxy"]
+        ENV PATH="/usr/local/bin:/app/.venv/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin"
     container_name: metamcp-cw-dev
     network_mode: host
     restart: on-failure
@@ -108,8 +107,7 @@ services:
       dockerfile_inline: |
         FROM ghcr.io/sparfenyuk/mcp-proxy:latest
         COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
-        ENV PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        ENTRYPOINT ["catatonit", "--", "mcp-proxy"]
+        ENV PATH="/usr/local/bin:/app/.venv/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin"
     container_name: metamcp-cw-prod
     network_mode: host
     restart: on-failure
