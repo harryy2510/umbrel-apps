@@ -3,8 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      # Host-network MetaMCP is on the Umbrel host, not a compose DNS name.
-      APP_HOST: 10.21.21.1
+      APP_HOST: 10.21.0.1
       APP_PORT: 12008
       PROXY_AUTH_ADD: "false"
 
@@ -12,7 +11,7 @@ services:
     image: postgres:16-alpine
     container_name: metamcp-pg
     network_mode: host
-    restart: unless-stopped
+    restart: on-failure
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-metamcp_db}
       POSTGRES_USER: ${POSTGRES_USER:-metamcp_user}
@@ -20,27 +19,19 @@ services:
       PGPORT: "9433"
     command: ["postgres", "-p", "9433", "-c", "listen_addresses=127.0.0.1"]
     volumes:
-      - ${APP_DATA_DIR:-.}/data/postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U metamcp_user -d metamcp_db -h 127.0.0.1 -p 9433"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      - ${APP_DATA_DIR}/data/postgres:/var/lib/postgresql/data
 
   app:
-    # No `image:` on purpose. Umbrel docker.pull() Heads GHCR and 401s on this
-    # private package even when the amd64 tar is already loaded on the host.
-    pull_policy: never
+    # No `image:`: Umbrel docker.pull() Heads GHCR and 401s on the private package.
+    # exports.sh tags the loaded tar to hariom-metamcp:local before compose runs.
     build:
       context: .
       dockerfile: metamcp.Dockerfile
     container_name: metamcp
     network_mode: host
     depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
+      - postgres
+    restart: on-failure
     stop_grace_period: 1m
     environment:
       NODE_ENV: production
@@ -68,7 +59,7 @@ services:
     image: ghcr.io/oomol-lab/open-connector:latest
     container_name: open-connector
     network_mode: host
-    restart: unless-stopped
+    restart: on-failure
     environment:
       HOST: 0.0.0.0
       PORT: "33000"
@@ -77,16 +68,15 @@ services:
       OOMOL_CONNECT_ENCRYPTION_KEY: ${OOMOL_CONNECT_ENCRYPTION_KEY}
       OOMOL_CONNECT_ADMIN_TOKEN: ${OOMOL_CONNECT_ADMIN_TOKEN}
     volumes:
-      - ${APP_DATA_DIR:-.}/data/oomol:/app/data
+      - ${APP_DATA_DIR}/data/oomol:/app/data
 
   cw-dev:
-    pull_policy: never
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile
     container_name: metamcp-cw-dev
     network_mode: host
-    restart: unless-stopped
+    restart: on-failure
     mem_limit: 512m
     command:
       - --pass-environment
@@ -105,16 +95,15 @@ services:
       AWS_EC2_METADATA_DISABLED: "true"
       FASTMCP_LOG_LEVEL: ERROR
     volumes:
-      - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
+      - ${APP_DATA_DIR}/data/uv-cache:/root/.cache/uv
 
   cw-prod:
-    pull_policy: never
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile
     container_name: metamcp-cw-prod
     network_mode: host
-    restart: unless-stopped
+    restart: on-failure
     mem_limit: 512m
     command:
       - --pass-environment
@@ -133,4 +122,4 @@ services:
       AWS_EC2_METADATA_DISABLED: "true"
       FASTMCP_LOG_LEVEL: ERROR
     volumes:
-      - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
+      - ${APP_DATA_DIR}/data/uv-cache:/root/.cache/uv
