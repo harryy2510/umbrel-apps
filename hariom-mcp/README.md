@@ -47,16 +47,29 @@ Oomol runtime tokens (`oct_…`) stay out of `stack.env`. After start, put them 
 
 If an `oct_` value was pasted into chat or logs, rotate it in OpenConnector Access and update the MetaMCP rows. Same for any AWS keys that appeared in SuperGateway logs.
 
-## 2. Load the MetaMCP image onto **host** Docker
+## 2. Load the MetaMCP image onto **host** Docker (not Arcane)
 
-`ghcr.io/umbrella-it-group/metamcp` is private. The working image is the linux/amd64 build already in Arcane. Save from DinD, load on the host (stdin, not a DinD `/tmp` path):
+Same tar as last time. Last time `docker load` went into DinD (`arcane_docker_1` + `unix:///data/docker.sock`). This time it is the Umbrel **host** daemon. Do not `docker exec` Arcane. Do not `docker load -i /tmp/...`.
+
+If `/home/umbrel/metamcp-umbrella.tar` is still on the box, as **root**:
 
 ```bash
-docker exec arcane_docker_1 docker -H unix:///data/docker.sock save ghcr.io/umbrella-it-group/metamcp:latest | docker load
-docker image inspect ghcr.io/umbrella-it-group/metamcp:latest --format '{{.Os}}/{{.Architecture}}'
+cat /home/umbrel/metamcp-umbrella.tar | docker load
+docker image inspect ghcr.io/umbrella-it-group/metamcp:latest --format '{{.Architecture}}'
 ```
 
-Must print `linux/amd64`. Do not `docker load -i` a file that only exists inside DinD.
+Must print `amd64`. Then refresh this community store and retry Install.
+
+If the tar is gone, rebuild on the Mac (Umbrel is x86_64; a Mac arm64 image exec-formats):
+
+```bash
+cd /tmp/metamcp-umbrella
+docker build --platform linux/amd64 -t ghcr.io/umbrella-it-group/metamcp:latest .
+docker save -o /tmp/metamcp-umbrella.tar ghcr.io/umbrella-it-group/metamcp:latest
+scp -o IdentitiesOnly=yes -i ~/.ssh/id_gh_deploy_ed25519 /tmp/metamcp-umbrella.tar umbrel@umbrel.local:/home/umbrel/metamcp-umbrella.tar
+```
+
+Then the same `cat … | docker load` on Umbrel as root.
 
 ## 3. Copy volumes out of Arcane
 

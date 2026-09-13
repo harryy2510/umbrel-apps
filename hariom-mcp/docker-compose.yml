@@ -29,7 +29,11 @@ services:
       start_period: 30s
 
   app:
-    image: ghcr.io/umbrella-it-group/metamcp:latest
+    # No `image:` on purpose. Umbrel docker.pull() Heads GHCR and 401s on this
+    # private package even when the amd64 tar is already loaded on the host.
+    build:
+      context: .
+      dockerfile: metamcp.Dockerfile
     container_name: metamcp
     network_mode: host
     depends_on:
@@ -75,7 +79,6 @@ services:
       - ${APP_DATA_DIR:-.}/data/oomol:/app/data
 
   cw-dev:
-    image: hariom-mcp-proxy:uv
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile
@@ -103,7 +106,6 @@ services:
       - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
 
   cw-prod:
-    image: hariom-mcp-proxy:uv
     build:
       context: .
       dockerfile: mcp-proxy.Dockerfile
