@@ -1,0 +1,30 @@
+manifestVersion: 1.1
+id: hariom-mcp
+category: developer
+name: MCP Gateway
+version: "1.0.0"
+tagline: MetaMCP fan-in, OpenConnector OAuth, CloudWatch via mcp-proxy
+icon: https://raw.githubusercontent.com/harryy2510/umbrel-apps/main/hariom-mcp/icon.png
+description: >-
+  Private LAN MCP stack for agents. MetaMCP aggregates tools with no API keys
+  on the agent URL. OpenConnector holds provider OAuth. CloudWatch runs as
+  uvx behind mcp-proxy on loopback.
+
+
+  Agents use http://umbrel.local:12008/metamcp/<endpoint>/mcp with no
+  Authorization header. Oomol runtime tokens stay on MetaMCP server rows.
+  This is a local community app, not a public Umbrel App Store submission.
+  First start needs stack.env and a copied MetaMCP image; see the app README.
+releaseNotes: >-
+  Host-network MetaMCP + OpenConnector + two CloudWatch mcp-proxy wrappers.
+  Replaces the Arcane DinD stack. Do not install Metorial for this job.
+developer: hariom
+website: https://github.com/Umbrella-IT-Group/metamcp
+repo: https://github.com/Umbrella-IT-Group/metamcp
+support: https://github.com/Umbrella-IT-Group/metamcp/issues
+port: 12008
+gallery: []
+path: ""
+deterministicPassword: false
+submitter: hariom
+submitterUrl: ""

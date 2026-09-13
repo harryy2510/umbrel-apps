@@ -1,0 +1,131 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # Host-network MetaMCP is on the Umbrel host, not a compose DNS name.
+      APP_HOST: 10.21.21.1
+      APP_PORT: 12008
+      PROXY_AUTH_ADD: "false"
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: metamcp-pg
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-metamcp_db}
+      POSTGRES_USER: ${POSTGRES_USER:-metamcp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPORT: "9433"
+    command: ["postgres", "-p", "9433", "-c", "listen_addresses=127.0.0.1"]
+    volumes:
+      - ${APP_DATA_DIR:-.}/data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metamcp_user -d metamcp_db -h 127.0.0.1 -p 9433"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    image: ghcr.io/umbrella-it-group/metamcp:latest
+    container_name: metamcp
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 1m
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: errors-only
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: "9433"
+      POSTGRES_USER: ${POSTGRES_USER:-metamcp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-metamcp_db}
+      DATABASE_URL: ${DATABASE_URL}
+      APP_URL: ${APP_URL:-http://umbrel.local:12008}
+      NEXT_PUBLIC_APP_URL: ${APP_URL:-http://umbrel.local:12008}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      TRANSFORM_LOCALHOST_TO_DOCKER_INTERNAL: "false"
+      ALLOW_UNAUTHENTICATED_ENDPOINTS: "true"
+      MCP_PROXY_URL_ALLOWED_HOSTS: "127.0.0.1,localhost"
+      BOOTSTRAP_ENABLE: ${BOOTSTRAP_ENABLE:-false}
+      BOOTSTRAP_USER_EMAIL: ${BOOTSTRAP_USER_EMAIL:-}
+      BOOTSTRAP_USER_NAME: ${BOOTSTRAP_USER_NAME:-Admin}
+      BOOTSTRAP_USER_PASSWORD: ${BOOTSTRAP_USER_PASSWORD:-}
+      BOOTSTRAP_DISABLE_REGISTRATION_UI: "true"
+      BOOTSTRAP_DISABLE_REGISTRATION_SSO: "true"
+
+  open-connector:
+    image: ghcr.io/oomol-lab/open-connector:latest
+    container_name: open-connector
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: "33000"
+      OOMOL_CONNECT_DATA_DIR: /app/data
+      OOMOL_CONNECT_ORIGIN: ${OOMOL_CONNECT_ORIGIN:-http://umbrel.local:33000}
+      OOMOL_CONNECT_ENCRYPTION_KEY: ${OOMOL_CONNECT_ENCRYPTION_KEY}
+      OOMOL_CONNECT_ADMIN_TOKEN: ${OOMOL_CONNECT_ADMIN_TOKEN}
+    volumes:
+      - ${APP_DATA_DIR:-.}/data/oomol:/app/data
+
+  cw-dev:
+    image: hariom-mcp-proxy:uv
+    build:
+      context: .
+      dockerfile: mcp-proxy.Dockerfile
+    container_name: metamcp-cw-dev
+    network_mode: host
+    restart: unless-stopped
+    mem_limit: 512m
+    command:
+      - --pass-environment
+      - --host=127.0.0.1
+      - --port=8010
+      - --no-stateless
+      - --
+      - uvx
+      - awslabs.cloudwatch-mcp-server@latest
+    environment:
+      AWS_ACCESS_KEY_ID: ${CW_DEV_AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${CW_DEV_AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${CW_DEV_AWS_REGION:-us-east-1}
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+      AWS_EC2_METADATA_DISABLED: "true"
+      FASTMCP_LOG_LEVEL: ERROR
+    volumes:
+      - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
+
+  cw-prod:
+    image: hariom-mcp-proxy:uv
+    build:
+      context: .
+      dockerfile: mcp-proxy.Dockerfile
+    container_name: metamcp-cw-prod
+    network_mode: host
+    restart: unless-stopped
+    mem_limit: 512m
+    command:
+      - --pass-environment
+      - --host=127.0.0.1
+      - --port=8011
+      - --no-stateless
+      - --
+      - uvx
+      - awslabs.cloudwatch-mcp-server@latest
+    environment:
+      AWS_ACCESS_KEY_ID: ${CW_PROD_AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${CW_PROD_AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${CW_PROD_AWS_REGION:-us-east-1}
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+      AWS_EC2_METADATA_DISABLED: "true"
+      FASTMCP_LOG_LEVEL: ERROR
+    volumes:
+      - ${APP_DATA_DIR:-.}/data/uv-cache:/root/.cache/uv
