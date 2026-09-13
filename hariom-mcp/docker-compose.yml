@@ -22,11 +22,12 @@ services:
       - ${APP_DATA_DIR}/data/postgres:/var/lib/postgresql/data
 
   app:
-    # No `image:`: Umbrel docker.pull() Heads GHCR and 401s on the private package.
+    # Inline Dockerfile: Umbrel does not copy extra Dockerfiles into app-data.
     # exports.sh tags the loaded tar to hariom-metamcp:local before compose runs.
     build:
       context: .
-      dockerfile: metamcp.Dockerfile
+      dockerfile_inline: |
+        FROM hariom-metamcp:local
     container_name: metamcp
     network_mode: host
     depends_on:
@@ -73,7 +74,11 @@ services:
   cw-dev:
     build:
       context: .
-      dockerfile: mcp-proxy.Dockerfile
+      dockerfile_inline: |
+        FROM ghcr.io/sparfenyuk/mcp-proxy:latest
+        COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+        ENV PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ENTRYPOINT ["catatonit", "--", "mcp-proxy"]
     container_name: metamcp-cw-dev
     network_mode: host
     restart: on-failure
@@ -100,7 +105,11 @@ services:
   cw-prod:
     build:
       context: .
-      dockerfile: mcp-proxy.Dockerfile
+      dockerfile_inline: |
+        FROM ghcr.io/sparfenyuk/mcp-proxy:latest
+        COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+        ENV PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ENTRYPOINT ["catatonit", "--", "mcp-proxy"]
     container_name: metamcp-cw-prod
     network_mode: host
     restart: on-failure
