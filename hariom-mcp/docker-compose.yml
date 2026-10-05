@@ -57,7 +57,7 @@ services:
       BOOTSTRAP_DISABLE_REGISTRATION_SSO: "true"
 
   open-connector:
-    image: ghcr.io/oomol-lab/open-connector:latest
+    image: ghcr.io/oomol-lab/open-connector:v1.8.0
     container_name: open-connector
     network_mode: host
     restart: on-failure
