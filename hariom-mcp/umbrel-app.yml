@@ -2,7 +2,7 @@ manifestVersion: 1.1
 id: hariom-mcp
 category: developer
 name: MCP Gateway
-version: "1.0.9"
+version: "1.0.10"
 tagline: MetaMCP fan-in, OpenConnector OAuth, CloudWatch via mcp-proxy
 icon: https://raw.githubusercontent.com/harryy2510/umbrel-apps/main/hariom-mcp/icon.png
 description: >-
@@ -15,7 +15,15 @@ description: >-
   Authorization header. Oomol runtime tokens stay on MetaMCP server rows.
   This is a local community app, not a public Umbrel App Store submission.
   First start needs stack.env and a copied MetaMCP image; see the app README.
+
+
+  The password under this app's credentials is the OpenConnector admin token.
+  Paste it to sign in to the OpenConnector console at http://umbrel.local:33000.
+  It is not a MetaMCP login.
 releaseNotes: >-
+  The OpenConnector admin token is now this app's Umbrel password (shown under
+  credentials). The OOMOL_CONNECT_ADMIN_TOKEN value in stack.env is no longer
+  used, and open OpenConnector console sessions must sign in again.
   Survive umbrelOS 2.0 image cleanup: re-seed the MetaMCP base image from the
   built app image when the hand-loaded base was removed.
   Pin OpenConnector to v1.8.0 instead of :latest.
@@ -28,6 +36,6 @@ support: https://github.com/Umbrella-IT-Group/metamcp/issues
 port: 12008
 gallery: []
 path: ""
-deterministicPassword: false
+deterministicPassword: true
 submitter: hariom
 submitterUrl: ""

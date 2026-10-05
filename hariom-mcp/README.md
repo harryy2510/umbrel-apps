@@ -45,6 +45,8 @@ Copy `env.example` to `stack.env` and fill it. `DATABASE_URL` must use the same 
 
 Oomol runtime tokens (`oct_…`) stay out of `stack.env`. After start, put them on MetaMCP MCP-server `bearer_token` rows.
 
+The OpenConnector admin token is not in `stack.env`. It is Umbrel's per-app password (`APP_PASSWORD`, derived from the Umbrel seed), shown under this app's credentials in the Umbrel UI. Paste it to sign in to the OpenConnector console at `http://umbrel.local:33000`. It guards the console and admin API only. Agents and MetaMCP use `oct_…` runtime tokens, which it does not affect.
+
 If an `oct_` value was pasted into chat or logs, rotate it in OpenConnector Access and update the MetaMCP rows. Same for any AWS keys that appeared in SuperGateway logs.
 
 ## 2. Load the MetaMCP image onto **host** Docker (not Arcane)
