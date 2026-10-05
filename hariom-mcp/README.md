@@ -71,6 +71,8 @@ scp -o IdentitiesOnly=yes -i ~/.ssh/id_gh_deploy_ed25519 /tmp/metamcp-umbrella.t
 
 Then the same `cat … | docker load` on Umbrel as root.
 
+umbrelOS 2.0 deletes Docker images that no installed app's `compose config --images` lists. That includes the hand-loaded `ghcr.io/umbrella-it-group/metamcp:latest` and `hariom-metamcp:local`. `exports.sh` re-seeds `hariom-metamcp:local` from the built `hariom-mcp-app` image, which the cleanup keeps. If start fails with `pull access denied for hariom-metamcp`, both are gone: load the tar again as above.
+
 ## 3. Copy volumes out of Arcane
 
 Default Umbrel app-data path:

@@ -13,4 +13,10 @@ if [ -f "${STACK_ENV}" ]; then
 fi
 
 # Map the loaded amd64 tar to a non-registry name so compose build does not Head GHCR.
-docker tag ghcr.io/umbrella-it-group/metamcp:latest hariom-metamcp:local >/dev/null 2>&1 || true
+# umbrelOS 2.0 deletes images missing from `compose config --images`, which lists
+# the built hariom-mcp-app but not its base. hariom-mcp-app is FROM-only, so it is
+# a full copy of MetaMCP and can re-seed the base after a cleanup sweep.
+docker tag ghcr.io/umbrella-it-group/metamcp:latest hariom-metamcp:local >/dev/null 2>&1 ||
+  docker image inspect hariom-metamcp:local >/dev/null 2>&1 ||
+  docker tag hariom-mcp-app:latest hariom-metamcp:local >/dev/null 2>&1 ||
+  true
